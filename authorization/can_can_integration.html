@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.10.10/">API</a>
+          <a href="/api-doc/1.12.5/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -128,7 +128,7 @@
 
 <h3 id="handling-unauthorized-objects">Handling Unauthorized Objects</h3>
 
-<p>When any CanCan check returns <code class="language-plaintext highlighter-rouge">false</code>, the unauthorized object is passed to <a href="/api-doc/1.10.10/GraphQL/Schema#unauthorized_object-class_method" target="_blank" title="API docs for GraphQL::Schema.unauthorized_object"><code>Schema.unauthorized_object</code></a>, as described in <a href="/authorization/authorization#handling-unauthorized-objects">Handling unauthorized objects</a>.</p>
+<p>When any CanCan check returns <code class="language-plaintext highlighter-rouge">false</code>, the unauthorized object is passed to <a href="/api-doc/1.12.5/GraphQL/Schema#unauthorized_object-class_method" target="_blank" title="API docs for GraphQL::Schema.unauthorized_object"><code>Schema.unauthorized_object</code></a>, as described in <a href="/authorization/authorization#handling-unauthorized-objects">Handling unauthorized objects</a>.</p>
 
 <h2 id="scopes">Scopes</h2>
 
@@ -206,6 +206,33 @@
 </code></pre></div></div>
 
 <p>It will require the named action (<code class="language-plaintext highlighter-rouge">:review_applicants</code>) for the object being viewed (a <code class="language-plaintext highlighter-rouge">JobPosting</code>).</p>
+
+<h3 id="authorizing-by-attribute">Authorizing by attribute</h3>
+
+<p>CanCan 3.0 added attribute-level authorization (<a href="https://github.com/CanCanCommunity/cancancan/pull/474">pull request</a>). You can leverage this in your field definitions with the <code class="language-plaintext highlighter-rouge">can_can_attribute:</code> configuration:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># This will call `.can?(:read, user, :email_address)`</span>
+<span class="n">field</span> <span class="ss">:email_address</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">true</span><span class="p">,</span>
+  <span class="ss">can_can_action: :read</span><span class="p">,</span>
+  <span class="ss">can_can_attribute: :email_address</span>
+</code></pre></div></div>
+
+<p>You could also provide a <em>default value</em> for <code class="language-plaintext highlighter-rouge">can_can_attribute</code> in your base field class:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Types::BaseField</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+    <span class="c1"># pass all configs to the super class:</span>
+    <span class="k">super</span>
+    <span class="c1"># Then set a new `can_can_attribute` value, if applicable</span>
+    <span class="k">if</span> <span class="n">can_can_attribute</span><span class="p">.</span><span class="nf">nil?</span> <span class="o">&amp;&amp;</span> <span class="n">can_can_action</span><span class="p">.</span><span class="nf">present?</span>
+      <span class="c1"># `method_sym` is the thing GraphQL-Ruby will use to resolve this field</span>
+      <span class="n">can_can_attribute</span><span class="p">(</span><span class="n">method_sym</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>(See <a href="/api-doc/1.12.5/GraphQL/Schema/Field" target="_blank" title="API docs for GraphQL::Schema::Field"><code>GraphQL::Schema::Field</code></a> for the different values available for defaults.)</p>
 
 <h2 id="authorizing-arguments">Authorizing Arguments</h2>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
-    <meta http-equiv="refresh" content="1;url=/api-doc/1.10.10/GraphQL/Tracing/PlatformTracing" />
+    <meta http-equiv="refresh" content="1;url=/api-doc/1.12.5/GraphQL/Tracing/PlatformTracing" />
   </head>
   <body>
     <p>Class: GraphQL::Tracing::PlatformTracing &lt; Object
@@ -10,11 +10,12 @@ Each platform provides: - <code class="language-plaintext highlighter-rouge">.pl
 <code class="language-plaintext highlighter-rouge">#platform_field_key(type, field)</code> 
 Direct Known Subclasses:
 AppOpticsTracing, AppsignalTracing, DataDogTracing, NewRelicTracing,
-PrometheusTracing, ScoutTracing, SkylightTracing
+PrometheusTracing, ScoutTracing, SkylightTracing, StatsdTracing
 Class methods:
 use
 Instance methods:
-initialize, instrument, platform_key_cache, trace, trace_field</p>
+cached_platform_key, initialize, instrument, trace, trace_field,
+transaction_name</p>
 
 
   </body>
